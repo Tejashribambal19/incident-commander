@@ -2,6 +2,8 @@ const express = require("express");
 const Incident = require("../models/Incident");
 const Event = require("../models/Event");
 const aiRouter = require("./ai");
+const injectIncident = require("../simulator/injectIncident");
+
 
 const investigateIncident =
     aiRouter.investigateIncident;
@@ -1221,5 +1223,40 @@ router.post(
 // ============================================================
 // EXPORT
 // ============================================================
+// ============================================================
+// POST /inject-fault
+// Inject a simulated production fault
+// ============================================================
+
+router.post(
+    "/inject-fault",
+    async (req, res) => {
+        try {
+            const type =
+                req.body?.type || "payment";
+
+            const incident =
+                await injectIncident(type);
+
+            res.json({
+                message:
+                    "Simulated fault injected successfully",
+                incident,
+            });
+
+        } catch (error) {
+            console.error(
+                "Fault injection error:",
+                error.message
+            );
+
+            res.status(400).json({
+                message:
+                    error.message ||
+                    "Failed to inject simulated fault",
+            });
+        }
+    }
+);
 
 module.exports = router;
