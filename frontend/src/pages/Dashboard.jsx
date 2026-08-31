@@ -374,10 +374,12 @@ function Dashboard() {
         ).length;
 
     const criticalIncidents =
-        incidentList.filter(
-            (incident) =>
-                incident.severity === "Critical"
-        ).length;
+    incidentList.filter(
+        (incident) =>
+            String(incident.severity || "")
+                .trim()
+                .toLowerCase() === "critical"
+    ).length;
 
     const resolvedIncidents =
         incidentList.filter(
